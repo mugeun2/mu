@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <header>
+        <title style="text-align: center;">영화 포스터</title>
+    </header>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap');
+
+        * {
+            font-family: "Black Han Sans", sans-serif;
+            font-weight: 400;
+            font-style: normal;
+
+        }
+
+        .centered-title {
+            text-align: center;
+            background-color: black;
+            color: rgb(197, 178, 216);
+            margin-top: 50px;
+        }
+    </style>
+
+</head>
+
+<body style="background-color: black;">
+    <header>
+        <h1 class="centered-title">영화 추천해조</h1>
+    </header>
+    <div class="navbar bg-body-tertiary">
+        <div class="container-fluid">
+            <a class="navbar-brand">영화 목록</a>
+            <form class="d-flex" role="search">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">검색</button>
+            </form>
+        </div>
+    </div>
+    <div id="movieList" class="row row-cols-1 row-cols-md-4 g-4"></div>
+    <script>
+        const options = {
+            method: 'GET',
+            headers: {
+                accept: 'application/json',
+                Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJkYjM4MTcyZjdmYTUwNWE4MDIyNmFiZWFmNzdjMmE0ZiIsInN1YiI6IjY2MjhhOGY1YjlhMGJkMDE2MWQ2ZTFiNSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.k63207viL0Pe-lMVUDbOsl9WBbpw02HAMp4YD6WL3Z4'
+            }
+        };
+
+        fetch('https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1', options)
+            .then(response => response.json())
+            .then(data => {
+                const movieList = document.getElementById('movieList');
+                data.results.forEach(movie => {
+                    const card = document.createElement('div');
+                    card.classList.add('col');
+                    card.innerHTML = `
+                        <div class="card h-100">
+                            <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" class="card-img-top" alt="${movie.title}">
+                            <div class="card-body" style="color: white; background-color: black;">
+                                <h5 class="card-title">${movie.title}</h5>
+                                <p class="card-text">${movie.overview}</p>
+                                <p class="card-text">평점: ${movie.vote_average}</p>
+                                <p class="card-text">인기도: ${movie.popularity}</p>
+                                <p class="card-text">개봉일: ${movie.release_date}</p>
+                            </div>
+                            <div class="card-footer">
+                                <small class="text-body-secondary">Last updated 3 mins ago</small>
+                            </div>
+                        </div>
+                    `;
+                    movieList.appendChild(card);
+                });
+            })
+            .catch(err => console.error(err));
+    </script>
+</body>
